@@ -31,6 +31,7 @@ if not TOKEN:
 # -------------------- ТВОИ ДАННЫЕ --------------------
 ADMIN_ID = 8414927732
 SELLER_USERNAME = "@GGDONAT1"
+REVIEWS_CHANNEL = "https://t.me/uzdinat2"
 
 # -------------------- ОПЛАТА --------------------
 PAYMENT_TEXT = """
@@ -58,9 +59,21 @@ ARTIKOVA ZUXRA
 📸 *После оплаты отправьте сюда чек / скрин оплаты*
 """
 
+# -------------------- ОТЗЫВЫ --------------------
+REVIEWS_TEXT = f"""
+⭐ *ОТЗЫВЫ КЛИЕНТОВ* ⭐
+
+Спасибо всем за доверие ❤️
+
+📢 *Канал с отзывами:*
+{REVIEWS_CHANNEL}
+
+👇 Нажми кнопку ниже, чтобы открыть отзывы.
+"""
+
 # -------------------- ТОВАРЫ --------------------
 SHOP_DATA = {
-    "⭐ Звезды Telegram": {
+    "⭐ Telegram Stars": {
         "100 ⭐": "30 000 сум",
         "150 ⭐": "45 000 сум",
         "250 ⭐": "70 000 сум",
@@ -76,7 +89,7 @@ SHOP_DATA = {
         "1000 + 1000": "195 000 сум",
         "2000 + 2000": "380 000 сум",
     },
-    "🌟 Звёздный Абонемент": {
+    "🌟 Звёздный абонемент": {
         "Абонемент": "195 000 сум",
         "+20 уровней": "370 000 сум",
     },
@@ -92,16 +105,16 @@ SHOP_DATA = {
         "950 гемов": "355 000 сум",
         "2000 гемов": "685 000 сум",
     },
-    "⭐ Telegram Premium": {
-        "На 1 месяц": "60 000 сум",
-        "На 1 год (каждый месяц по 40 000 сум)": "480 000 сум",
+    "⭐ Telegram Premium ⭐": {
+        "📅 На 1 месяц — 60 000 сум": "60 000 сум",
+        "📆 На 1 год — 480 000 сум": "480 000 сум",
     }
 }
 
 CATEGORY_INFO = {
-    "⭐ Звезды Telegram": """🌟 *TELEGRAM STARS* 🌟
+    "⭐ Telegram Stars": """⭐ *TELEGRAM STARS — ВЫГОДНО И БЫСТРО* ⭐
 
-💎 Пополняй звёзды без лишних переплат
+🚀 Пополняй звёзды без лишних переплат
 🔒 Надёжно | Проверено
 
 💰 *Цены:*
@@ -113,18 +126,18 @@ CATEGORY_INFO = {
 • 750 ⭐ — 199 000 сум
 • 1000 ⭐ — 285 000 сум
 
-⚡ Успей купить по текущим ценам
+🔥 Успей купить по текущим ценам
 """,
 
-    "💎 FC Points": """💎 *FC POINTS* 💎
+    "💎 FC Points": """💎 *FC POINTS — ЗАЛЕТАЙ ПО ВЫГОДЕ* 💎
 
 🚀 Хочешь топ состав и быстрый апгрейд?
 Не трать время — бери FC Points с бонусом x2!
 
-🔥 *Плюсы сейчас:*
-✔ Двойной бонус к каждому паку
-✔ Моментальная выдача
-✔ Проверенный продавец
+🔥 *Только сейчас:*
+✔️ Двойной бонус к каждому паку
+✔️ Моментальная выдача
+✔️ Проверенный продавец
 
 💰 *Цены:*
 • 40 + 40 — 13 000 сум
@@ -134,20 +147,20 @@ CATEGORY_INFO = {
 • 2000 + 2000 — 380 000 сум
 """,
 
-    "🌟 Звёздный Абонемент": """🌟 *ЗВЁЗДНЫЙ АБОНЕМЕНТ* 🌟
+    "🌟 Звёздный абонемент": """🌟 *ЗВЁЗДНЫЙ АБОНЕМЕНТ* 🌟
 
 🔥 Легендарный 120 KLOSE уже доступен!
-Прокачай состав и забери топ игрока прямо сейчас ⚽
+Прокачай состав и забери топ игрока прямо сейчас ⚽💥
 
 💰 *Цены:*
-• Абонемент — 195 000 сум
-• +20 уровней — 370 000 сум
+⭐ Абонемент — 195 000 сум
+🚀 +20 уровней — 370 000 сум
 
 ✨ *Что получаешь:*
-✔ Топовый игрок 120 OVR
-✔ Кучу наград и ресурсов
-✔ Быстрый прогресс
-✔ Максимум буста для аккаунта
+✔️ Топовый игрок 120 OVR
+✔️ Кучу наград и ресурсов
+✔️ Быстрый прогресс
+✔️ Максимум буста для аккаунта
 """,
 
     "🔥 Brawl Pass": """🔥 *BRAWL PASS АКЦИЯ* 🔥
@@ -155,39 +168,59 @@ CATEGORY_INFO = {
 Прокачай свой аккаунт в Brawl Stars на максимум 🚀
 
 💰 *Цены:*
-• Brawl Pass — 70 000 сум
-• Brawl Pass Plus — 110 000 сум
+🎟️ Brawl Pass — 70 000 сум
+🎟️ Brawl Pass Plus — 110 000 сум
+
+✨ *Что получаешь:*
+✔️ Эксклюзивные награды
+✔️ Быстрый прогресс
+✔️ Больше ресурсов и ключей
+✔️ Дополнительные бонусы в Plus
 """,
 
-    "💎 Гемы": """💎 *ГЕМЫ BRAWL STARS* 💎
+    "💎 Гемы": """💎 *ГЕМЫ В НАЛИЧИИ* 💎
 
-Покупай гемы выгодно и быстро ⚡
+🚀 Быстрое пополнение | Надёжно | Без лишних заморочек
 
 💰 *Цены:*
-• 30 гемов — 16 000 сум
-• 80 гемов — 40 000 сум
-• 170 гемов — 74 000 сум
-• 360 гемов — 145 000 сум
-• 950 гемов — 355 000 сум
-• 2000 гемов — 685 000 сум
+🔹 30 гемов — 16 000 сум
+🔹 80 гемов — 40 000 сум
+🔹 170 гемов — 74 000 сум
+🔹 360 гемов — 145 000 сум
+🔹 950 гемов — 355 000 сум
+🔹 2000 гемов — 685 000 сум
 """,
 
-    "⭐ Telegram Premium": """⭐ *TELEGRAM PREMIUM* ⭐
+    "⭐ Telegram Premium ⭐": """⭐ *TELEGRAM PREMIUM* ⭐
 
-Получай все премиум функции Telegram 🚀
+🚀 Открой больше возможностей в Telegram!
+Эксклюзивные функции, высокая скорость и максимум комфорта 💎
 
-💰 *Цены:*
-• На 1 месяц — 60 000 сум
-• На 1 год (каждый месяц по 40 000 сум) — 480 000 сум
+💰 *Тарифы:*
+📅 На 1 месяц — 60 000 сум
+📆 На год — всего 40 000 сум / месяц (выгоднее 🔥)
+
+✨ *Что получаешь:*
+✔️ Быстрая загрузка файлов
+✔️ Увеличенные лимиты
+✔️ Уникальные стикеры и реакции
+✔️ Отключение рекламы
+✔️ И многое другое!
+
+📩 *Заказать:* @GGDONAT1
+⚡ Быстро | Надёжно | Доступно
+
+Не упусти шанс прокачать свой Telegram 💜
 """
 }
 
-# -------------------- КЛАВИАТУРА --------------------
+# -------------------- КЛАВИАТУРЫ --------------------
 def main_menu():
     return ReplyKeyboardMarkup(
         [
             [KeyboardButton("🛍 Каталог")],
-            [KeyboardButton("💳 Оплата"), KeyboardButton("📞 Связь")],
+            [KeyboardButton("💳 Оплата"), KeyboardButton("⭐ Отзывы")],
+            [KeyboardButton("📞 Связь")]
         ],
         resize_keyboard=True
     )
@@ -205,6 +238,11 @@ def products_keyboard(category):
     keyboard.append([InlineKeyboardButton("⬅ Назад", callback_data="back_catalog")])
     return InlineKeyboardMarkup(keyboard)
 
+def reviews_keyboard():
+    return InlineKeyboardMarkup([
+        [InlineKeyboardButton("⭐ Открыть канал отзывов", url=REVIEWS_CHANNEL)]
+    ])
+
 # -------------------- /start --------------------
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
@@ -215,7 +253,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 Здесь ты можешь купить:
 ⭐ Telegram Stars
 💎 FC Points
-🌟 Звёздный Абонемент
+🌟 Звёздный абонемент
 🔥 Brawl Pass
 💎 Гемы
 ⭐ Telegram Premium
@@ -224,7 +262,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 """
     await update.message.reply_text(text, reply_markup=main_menu())
 
-# -------------------- ТЕКСТОВЫЕ КНОПКИ --------------------
+# -------------------- ОБРАБОТКА ТЕКСТА --------------------
 async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = update.message.text
 
@@ -233,6 +271,13 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     elif text == "💳 Оплата":
         await update.message.reply_text(PAYMENT_TEXT, parse_mode="Markdown")
+
+    elif text == "⭐ Отзывы":
+        await update.message.reply_text(
+            REVIEWS_TEXT,
+            parse_mode="Markdown",
+            reply_markup=reviews_keyboard()
+        )
 
     elif text == "📞 Связь":
         await update.message.reply_text(
@@ -313,16 +358,6 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_markup=main_menu()
     )
 
-# -------------------- НЕ ФОТО ПОСЛЕ ОПЛАТЫ --------------------
-async def handle_other(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if update.message.text and update.message.text.startswith("/"):
-        return
-
-    await update.message.reply_text(
-        "📸 Пожалуйста, отправьте *скрин / чек оплаты* фото.",
-        parse_mode="Markdown"
-    )
-
 # -------------------- ЗАПУСК --------------------
 def main():
     app = Application.builder().token(TOKEN).build()
@@ -331,7 +366,6 @@ def main():
     app.add_handler(CallbackQueryHandler(button_handler))
     app.add_handler(MessageHandler(filters.PHOTO, handle_photo))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text))
-    app.add_handler(MessageHandler(~filters.PHOTO & ~filters.TEXT, handle_other))
 
     print("✅ Бот запущен!")
     app.run_polling()

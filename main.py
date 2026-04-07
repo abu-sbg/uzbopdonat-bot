@@ -1,10 +1,6 @@
 import os
 import logging
-from telegram import (
-    Update,
-    ReplyKeyboardMarkup,
-    KeyboardButton
-)
+from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import (
     ApplicationBuilder,
     CommandHandler,
@@ -34,7 +30,7 @@ SELLER_USERNAME = "@GGDONAT1"
 REVIEWS_LINK = "https://t.me/uzdinat2"
 
 # =========================
-# ТЕКСТ ОПЛАТЫ
+# ОПЛАТА
 # =========================
 PAYMENT_TEXT = """
 💳 ОПЛАТА
@@ -65,7 +61,7 @@ ARTIKOVA ZUXRA
 # ТОВАРЫ
 # =========================
 SHOP_DATA = {
-    "⭐ Звезды Telegram": {
+    "⭐ Telegram Stars": {
         "100 ⭐": "30 000 сум",
         "150 ⭐": "45 000 сум",
         "250 ⭐": "70 000 сум",
@@ -81,36 +77,135 @@ SHOP_DATA = {
         "12 месяцев": "460 000 сум",
     },
 
-    "⚽ FC Points": {
-        "FC Points 1": "Цена уточняется",
-        "FC Points 2": "Цена уточняется",
-        "FC Points 3": "Цена уточняется",
+    "💎 FC Points": {
+        "40 + 40": "13 000 сум",
+        "100 + 100": "25 000 сум",
+        "500 + 500": "96 000 сум",
+        "1000 + 1000": "195 000 сум",
+        "2000 + 2000": "380 000 сум",
+    },
+
+    "🌟 Звёздный абонемент": {
+        "Абонемент": "195 000 сум",
+        "+20 уровней": "370 000 сум",
     },
 
     "🔥 Brawl Pass": {
-        "Brawl Pass": "Цена уточняется",
-        "Brawl Pass Plus": "Цена уточняется",
+        "Brawl Pass": "70 000 сум",
+        "Brawl Pass Plus": "110 000 сум",
     },
 
-    "💠 Gems": {
-        "Пакет 1": "Цена уточняется",
-        "Пакет 2": "Цена уточняется",
-        "Пакет 3": "Цена уточняется",
-    },
-
-    "🎫 Абик": {
-        "Абик 1": "Цена уточняется",
-        "Абик 2": "Цена уточняется",
+    "💎 Gems": {
+        "30 гемов": "16 000 сум",
+        "80 гемов": "40 000 сум",
+        "170 гемов": "74 000 сум",
+        "360 гемов": "145 000 сум",
+        "950 гемов": "355 000 сум",
+        "2000 гемов": "685 000 сум",
     },
 }
 
 # =========================
-# КНОПКИ
+# ОПИСАНИЯ
+# =========================
+CATEGORY_TEXTS = {
+    "⭐ Telegram Stars": """
+⭐ Telegram Stars
+
+🚀 Пополняй звёзды без лишних переплат
+🔒 Надёжно | Проверено
+
+💰 Выбери нужное количество ниже 👇
+""",
+
+    "💎 Telegram Premium": f"""
+⭐ Telegram Premium ⭐
+
+🚀 Открой больше возможностей в Telegram
+Быстрее, удобнее и намного круче 💎
+
+💰 Тарифы:
+📅 3 месяца — 195 000 сум
+📆 6 месяцев — 265 000 сум
+👑 12 месяцев — 460 000 сум
+
+🔥 Что получаешь:
+✔️ Быстрая загрузка
+✔️ Красивые реакции и эмодзи
+✔️ Больше лимитов
+✔️ Premium возможности
+
+📩 Хочешь купить?
+Пиши мне: {SELLER_USERNAME} / через бота
+
+📝 Канал отзывов:
+{REVIEWS_LINK}
+""",
+
+    "💎 FC Points": """
+💎 FC POINTS — ЗАЛЕТАЙ ПО ВЫГОДЕ 💎
+
+🚀 Хочешь топ состав и быстрый апгрейд?
+Не трать время — бери FC Points с бонусом x2!
+
+🔥 Только сейчас:
+✔️ Двойной бонус к каждому паку
+✔️ Моментальная выдача
+✔️ Проверенный продавец
+
+💰 Выбери пакет ниже 👇
+""",
+
+    "🌟 Звёздный абонемент": """
+🌟 ЗВЁЗДНЫЙ АБОНЕМЕНТ 🌟
+
+🔥 Легендарный 120 KLOSE уже доступен!
+Прокачай состав и забери топ игрока прямо сейчас ⚽💥
+
+✨ Что получаешь:
+✔️ Топовый игрок 120 OVR
+✔️ Кучу наград и ресурсов
+✔️ Быстрый прогресс
+✔️ Максимум буста для аккаунта
+
+💰 Выбери вариант ниже 👇
+""",
+
+    "🔥 Brawl Pass": """
+🔥 BRAWL PASS АКЦИЯ 🔥
+
+Прокачай свой аккаунт в Brawl Stars на максимум 🚀
+
+✨ Что получаешь:
+✔️ Эксклюзивные награды
+✔️ Быстрый прогресс
+✔️ Больше ресурсов и ключей
+✔️ Дополнительные бонусы в Plus
+
+💰 Выбери вариант ниже 👇
+""",
+
+    "💎 Gems": """
+💎 ГЕМЫ В НАЛИЧИИ 💎
+
+🚀 Быстрое пополнение | Надежно | Без лишних заморочек
+
+✨ Почему мы?
+✔️ Моментальная выдача
+✔️ Выгодные цены
+✔️ Проверенный сервис
+
+💰 Выбери нужный пакет ниже 👇
+"""
+}
+
+# =========================
+# МЕНЮ
 # =========================
 MAIN_MENU = [
-    ["⭐ Звезды Telegram", "💎 Telegram Premium"],
-    ["⚽ FC Points", "🔥 Brawl Pass"],
-    ["💠 Gems", "🎫 Абик"],
+    ["⭐ Telegram Stars", "💎 Telegram Premium"],
+    ["💎 FC Points", "🌟 Звёздный абонемент"],
+    ["🔥 Brawl Pass", "💎 Gems"],
     ["💳 Оплата", "🛠 Тех поддержка"],
     ["📝 Отзывы"]
 ]
@@ -133,16 +228,16 @@ def get_category_keyboard(category_name):
 # START
 # =========================
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    text = f"""
+    text = """
 👋 Добро пожаловать в магазин доната!
 
 🔥 Здесь можно купить:
 ⭐ Telegram Stars
 💎 Telegram Premium
-⚽ FC Points
+💎 FC Points
+🌟 Звёздный абонемент
 🔥 Brawl Pass
-💠 Gems
-🎫 Абик
+💎 Gems
 
 ⚡ Быстро | Надежно | Удобно
 
@@ -156,64 +251,10 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = update.message.text
 
-    # Главное меню
+    # Если нажали категорию
     if text in SHOP_DATA:
-        category_texts = {
-            "⭐ Звезды Telegram": """
-⭐ Telegram Stars
-
-🚀 Пополняй звёзды без лишних переплат
-🔒 Надёжно | Проверено
-
-💰 Выбери нужное количество ниже 👇
-""",
-            "💎 Telegram Premium": f"""
-⭐ Telegram Premium ⭐
-
-🚀 Открой больше возможностей в Telegram
-Быстрее, удобнее и намного круче 💎
-
-💰 Тарифы:
-📅 3 месяца — 195.000 сум
-📆 6 месяцев — 265.000 сум
-👑 12 месяцев — 460.000 сум
-
-🔥 Что получаешь:
-✔️ Быстрая загрузка
-✔️ Красивые реакции и эмодзи
-✔️ Больше лимитов
-✔️ Premium возможности
-
-📩 Хочешь купить?
-Пиши мне: {SELLER_USERNAME} / через бота
-
-Канал отзывов:
-{REVIEWS_LINK}
-""",
-            "⚽ FC Points": """
-⚽ FC Points
-
-🔥 Выберите нужный вариант ниже 👇
-""",
-            "🔥 Brawl Pass": """
-🔥 Brawl Pass
-
-🎮 Выберите нужный вариант ниже 👇
-""",
-            "💠 Gems": """
-💠 Gems
-
-💎 Выберите нужный пакет ниже 👇
-""",
-            "🎫 Абик": """
-🎫 Абик
-
-📦 Выберите нужный вариант ниже 👇
-"""
-        }
-
         await update.message.reply_text(
-            category_texts.get(text, "Выберите товар 👇"),
+            CATEGORY_TEXTS.get(text, "Выберите товар 👇"),
             reply_markup=get_category_keyboard(text)
         )
         return
@@ -228,7 +269,10 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     # Оплата
     if text == "💳 Оплата":
-        await update.message.reply_text(PAYMENT_TEXT, reply_markup=get_main_keyboard())
+        await update.message.reply_text(
+            PAYMENT_TEXT,
+            reply_markup=get_main_keyboard()
+        )
         return
 
     # Тех поддержка
@@ -247,7 +291,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
 
-    # Если выбрали конкретный товар
+    # Проверка выбранного товара
     selected = None
     selected_category = None
 
@@ -265,12 +309,11 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         context.user_data["selected_category"] = selected_category
 
         await update.message.reply_text(
-            f"✅ Вы выбрали:\n\n{selected_category}\n{selected}\n\nТеперь оплатите 👇"
+            f"✅ Вы выбрали:\n\n📦 {selected_category}\n🛒 {selected}\n\nТеперь оплатите 👇"
         )
         await update.message.reply_text(PAYMENT_TEXT)
         return
 
-    # Если текст непонятен
     await update.message.reply_text(
         "❗ Пожалуйста, выберите кнопку из меню",
         reply_markup=get_main_keyboard()
@@ -307,7 +350,7 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 # =========================
-# ДОКУМЕНТЫ/ФАЙЛЫ ЧЕКОВ
+# ДОКУМЕНТЫ / ФАЙЛЫ
 # =========================
 async def handle_document(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user

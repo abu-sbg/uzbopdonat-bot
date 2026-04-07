@@ -3,31 +3,39 @@ import logging
 from telegram import (
     Update,
     ReplyKeyboardMarkup,
-    InlineKeyboardMarkup,
-    InlineKeyboardButton,
+    KeyboardButton
 )
 from telegram.ext import (
     ApplicationBuilder,
     CommandHandler,
     MessageHandler,
     ContextTypes,
-    filters,
-    CallbackQueryHandler,
+    filters
 )
 
 # =========================
-# НАСТРОЙКИ
+# ЛОГИ
 # =========================
+logging.basicConfig(
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    level=logging.INFO
+)
 
+# =========================
+# TOKEN
+# =========================
 TOKEN = os.getenv("BOT_TOKEN")
 
-if not TOKEN:
-    raise ValueError("❌ BOT_TOKEN не найден! Добавь его в Railway Variables")
-
+# =========================
+# ТВОИ ДАННЫЕ
+# =========================
 ADMIN_ID = 8414927732
 SELLER_USERNAME = "@GGDONAT1"
 REVIEWS_LINK = "https://t.me/uzdinat2"
 
+# =========================
+# ТЕКСТ ОПЛАТЫ
+# =========================
 PAYMENT_TEXT = """
 💳 ОПЛАТА
 
@@ -45,20 +53,19 @@ ARTIKOVA ZUXRA
 
 🏧 Можно в банкомате
 
-❌ На номер не кидать
+❌ На номер НЕ кидать
 ❌ Переводить только на карту
 
 🛑 За ошибочный перевод не ручаюсь
 
-📸 После оплаты отправьте сюда чек / скрин оплаты
+📸 После оплаты отправьте сюда чек/скрин оплаты
 """
 
 # =========================
 # ТОВАРЫ
 # =========================
-
 SHOP_DATA = {
-    "⭐ Звёзды Telegram": {
+    "⭐ Звезды Telegram": {
         "100 ⭐": "30 000 сум",
         "150 ⭐": "45 000 сум",
         "250 ⭐": "70 000 сум",
@@ -74,45 +81,93 @@ SHOP_DATA = {
         "12 месяцев": "460 000 сум",
     },
 
-    "💎 Гемы": {
-        "30 гемов": "16 000 сум",
-        "80 гемов": "40 000 сум",
-        "170 гемов": "74 000 сум",
-        "360 гемов": "145 000 сум",
-        "950 гемов": "355 000 сум",
-        "2000 гемов": "685 000 сум",
+    "⚽ FC Points": {
+        "FC Points 1": "Цена уточняется",
+        "FC Points 2": "Цена уточняется",
+        "FC Points 3": "Цена уточняется",
     },
 
     "🔥 Brawl Pass": {
-        "Brawl Pass": "70 000 сум",
-        "Brawl Pass Plus": "110 000 сум",
+        "Brawl Pass": "Цена уточняется",
+        "Brawl Pass Plus": "Цена уточняется",
     },
 
-    "🌟 Звёздный абонемент": {
-        "Абонемент": "195 000 сум",
-        "+20 уровней": "370 000 сум",
+    "💠 Gems": {
+        "Пакет 1": "Цена уточняется",
+        "Пакет 2": "Цена уточняется",
+        "Пакет 3": "Цена уточняется",
     },
 
-    "⚽ FC Points": {
-        "40 + 40": "13 000 сум",
-        "100 + 100": "25 000 сум",
-        "500 + 500": "96 000 сум",
-        "1000 + 1000": "195 000 сум",
-        "2000 + 2000": "380 000 сум",
-    }
+    "🎫 Абик": {
+        "Абик 1": "Цена уточняется",
+        "Абик 2": "Цена уточняется",
+    },
 }
 
-CATEGORY_TEXTS = {
-    "⭐ Звёзды Telegram": """
-⭐ TELEGRAM STARS — ВЫГОДНО И БЫСТРО ⭐
+# =========================
+# КНОПКИ
+# =========================
+MAIN_MENU = [
+    ["⭐ Звезды Telegram", "💎 Telegram Premium"],
+    ["⚽ FC Points", "🔥 Brawl Pass"],
+    ["💠 Gems", "🎫 Абик"],
+    ["💳 Оплата", "🛠 Тех поддержка"],
+    ["📝 Отзывы"]
+]
+
+def get_main_keyboard():
+    return ReplyKeyboardMarkup(MAIN_MENU, resize_keyboard=True)
+
+def get_category_keyboard(category_name):
+    buttons = []
+
+    for item, price in SHOP_DATA[category_name].items():
+        buttons.append([f"{item} — {price}"])
+
+    buttons.append(["📝 Отзывы"])
+    buttons.append(["🔙 Назад в меню"])
+
+    return ReplyKeyboardMarkup(buttons, resize_keyboard=True)
+
+# =========================
+# START
+# =========================
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    text = f"""
+👋 Добро пожаловать в магазин доната!
+
+🔥 Здесь можно купить:
+⭐ Telegram Stars
+💎 Telegram Premium
+⚽ FC Points
+🔥 Brawl Pass
+💠 Gems
+🎫 Абик
+
+⚡ Быстро | Надежно | Удобно
+
+👇 Выберите нужный раздел ниже:
+"""
+    await update.message.reply_text(text, reply_markup=get_main_keyboard())
+
+# =========================
+# ОБРАБОТКА ТЕКСТА
+# =========================
+async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    text = update.message.text
+
+    # Главное меню
+    if text in SHOP_DATA:
+        category_texts = {
+            "⭐ Звезды Telegram": """
+⭐ Telegram Stars
 
 🚀 Пополняй звёзды без лишних переплат
 🔒 Надёжно | Проверено
 
 💰 Выбери нужное количество ниже 👇
 """,
-
-    "💎 Telegram Premium": """
+            "💎 Telegram Premium": f"""
 ⭐ Telegram Premium ⭐
 
 🚀 Открой больше возможностей в Telegram
@@ -130,327 +185,172 @@ CATEGORY_TEXTS = {
 ✔️ Premium возможности
 
 📩 Хочешь купить?
-Пиши мне: @GGDONAT1 / через бота: @uzbtopdonat_bot
+Пиши мне: {SELLER_USERNAME} / через бота
+
+Канал отзывов:
+{REVIEWS_LINK}
 """,
-
-    "💎 Гемы": """
-💎 ГЕМЫ В НАЛИЧИИ 💎
-
-🚀 Быстрое пополнение | Надёжно | Без лишних заморочек
-
-💰 Выбери нужный пак ниже 👇
-""",
-
-    "🔥 Brawl Pass": """
-🔥 BRAWL PASS АКЦИЯ 🔥
-
-Прокачай свой аккаунт в Brawl Stars на максимум 🚀
-
-🎟️ Выбери вариант ниже 👇
-""",
-
-    "🌟 Звёздный абонемент": """
-🌟 ЗВЁЗДНЫЙ АБОНЕМЕНТ 🌟
-
-🔥 Легендарный 120 KLOSE уже доступен!
-Прокачай состав и забери топ игрока прямо сейчас ⚽💥
-
-⭐ Выбери вариант ниже 👇
-""",
-
-    "⚽ FC Points": """
-💎 FC POINTS — ЗАЛЕТАЙ ПО ВЫГОДЕ 💎
-
-🚀 Хочешь топ состав и быстрый апгрейд?
-Не трать время — бери FC Points с бонусом x2!
-
-⚡ Выбери нужный пак ниже 👇
-"""
-}
-
-# =========================
-# ЛОГИ
-# =========================
-
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    level=logging.INFO
-)
-
-# =========================
-# КНОПКИ
-# =========================
-
-main_keyboard = ReplyKeyboardMarkup(
-    [
-        ["⭐ Звёзды Telegram", "💎 Telegram Premium"],
-        ["💎 Гемы", "🔥 Brawl Pass"],
-        ["🌟 Звёздный абонемент", "⚽ FC Points"],
-        ["📝 Отзывы", "📞 Связаться с продавцом"],
-        ["💳 Оплата"],
-    ],
-    resize_keyboard=True
-)
-
-def get_reviews_button():
-    return InlineKeyboardMarkup([
-        [InlineKeyboardButton("📝 Открыть отзывы", url=REVIEWS_LINK)]
-    ])
-
-def get_seller_button():
-    return InlineKeyboardMarkup([
-        [InlineKeyboardButton("📩 Написать продавцу", url=f"https://t.me/{SELLER_USERNAME.replace('@', '')}")]
-    ])
-
-def build_product_buttons(category_name):
-    keyboard = []
-
-    for item_name, price in SHOP_DATA[category_name].items():
-        callback_data = f"buy|{category_name}|{item_name}|{price}"
-        keyboard.append([
-            InlineKeyboardButton(f"{item_name} — {price}", callback_data=callback_data)
-        ])
-
-    keyboard.append([InlineKeyboardButton("📝 Отзывы", url=REVIEWS_LINK)])
-    keyboard.append([InlineKeyboardButton("📩 Написать продавцу", url=f"https://t.me/{SELLER_USERNAME.replace('@', '')}")])
-
-    return InlineKeyboardMarkup(keyboard)
-
-# =========================
-# СТАРТ
-# =========================
-
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    text = f"""
-👋 Добро пожаловать!
-
-Здесь можно купить:
-
-⭐ Telegram Stars
-💎 Telegram Premium
-💎 Гемы
-🔥 Brawl Pass
-🌟 Звёздный абонемент
+            "⚽ FC Points": """
 ⚽ FC Points
 
-⚡ Быстро | Надёжно | Удобно
+🔥 Выберите нужный вариант ниже 👇
+""",
+            "🔥 Brawl Pass": """
+🔥 Brawl Pass
 
-📩 Продавец: {SELLER_USERNAME}
-📝 Отзывы: {REVIEWS_LINK}
+🎮 Выберите нужный вариант ниже 👇
+""",
+            "💠 Gems": """
+💠 Gems
 
-Выберите нужный раздел ниже 👇
+💎 Выберите нужный пакет ниже 👇
+""",
+            "🎫 Абик": """
+🎫 Абик
+
+📦 Выберите нужный вариант ниже 👇
 """
-    await update.message.reply_text(text, reply_markup=main_keyboard)
+        }
 
-# =========================
-# МЕНЮ
-# =========================
-
-async def menu_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    text = update.message.text
-
-    if text in SHOP_DATA:
-        category_text = CATEGORY_TEXTS.get(text, f"📦 {text}")
         await update.message.reply_text(
-            category_text,
-            reply_markup=build_product_buttons(text)
+            category_texts.get(text, "Выберите товар 👇"),
+            reply_markup=get_category_keyboard(text)
         )
+        return
 
-    elif text == "📝 Отзывы":
+    # Назад
+    if text == "🔙 Назад в меню":
         await update.message.reply_text(
-            f"📝 Отзывы клиентов:\n{REVIEWS_LINK}",
-            reply_markup=get_reviews_button()
+            "🔙 Вы вернулись в главное меню",
+            reply_markup=get_main_keyboard()
         )
+        return
 
-    elif text == "📞 Связаться с продавцом":
+    # Оплата
+    if text == "💳 Оплата":
+        await update.message.reply_text(PAYMENT_TEXT, reply_markup=get_main_keyboard())
+        return
+
+    # Тех поддержка
+    if text == "🛠 Тех поддержка":
         await update.message.reply_text(
-            f"📩 Продавец: {SELLER_USERNAME}\n🆔 ID: {ADMIN_ID}",
-            reply_markup=get_seller_button()
+            f"🛠 Тех поддержка:\n{SELLER_USERNAME}",
+            reply_markup=get_main_keyboard()
         )
+        return
 
-    elif text == "💳 Оплата":
+    # Отзывы
+    if text == "📝 Отзывы":
+        await update.message.reply_text(
+            f"📝 Канал отзывов:\n{REVIEWS_LINK}",
+            reply_markup=get_main_keyboard()
+        )
+        return
+
+    # Если выбрали конкретный товар
+    selected = None
+    selected_category = None
+
+    for category, items in SHOP_DATA.items():
+        for item, price in items.items():
+            if text == f"{item} — {price}":
+                selected = f"{item} — {price}"
+                selected_category = category
+                break
+        if selected:
+            break
+
+    if selected:
+        context.user_data["selected_product"] = selected
+        context.user_data["selected_category"] = selected_category
+
+        await update.message.reply_text(
+            f"✅ Вы выбрали:\n\n{selected_category}\n{selected}\n\nТеперь оплатите 👇"
+        )
         await update.message.reply_text(PAYMENT_TEXT)
+        return
 
-    else:
-        await update.message.reply_text(
-            "Выбери нужную кнопку ниже 👇",
-            reply_markup=main_keyboard
-        )
-
-# =========================
-# ПОКУПКА
-# =========================
-
-async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    query = update.callback_query
-    await query.answer()
-
-    data = query.data
-
-    if data.startswith("buy|"):
-        try:
-            _, category, item_name, price = data.split("|", 3)
-        except ValueError:
-            await query.message.reply_text("❌ Ошибка товара.")
-            return
-
-        context.user_data["selected_category"] = category
-        context.user_data["selected_item"] = item_name
-        context.user_data["selected_price"] = price
-
-        order_text = f"""
-🛒 ВАШ ЗАКАЗ
-
-📦 Категория: {category}
-🎁 Товар: {item_name}
-💰 Цена: {price}
-
-{PAYMENT_TEXT}
-"""
-
-        await query.message.reply_text(order_text)
-
-        user = query.from_user
-        admin_text = f"""
-📥 НОВАЯ ЗАЯВКА
-
-👤 Пользователь: @{user.username if user.username else "без username"}
-🆔 ID: {user.id}
-📛 Имя: {user.first_name}
-
-📦 Категория: {category}
-🎁 Товар: {item_name}
-💰 Цена: {price}
-"""
-
-        await context.bot.send_message(chat_id=ADMIN_ID, text=admin_text)
+    # Если текст непонятен
+    await update.message.reply_text(
+        "❗ Пожалуйста, выберите кнопку из меню",
+        reply_markup=get_main_keyboard()
+    )
 
 # =========================
-# ФОТО / ЧЕКИ
+# ФОТО ЧЕКОВ
 # =========================
-
 async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
-
-    category = context.user_data.get("selected_category", "Не выбрано")
-    item_name = context.user_data.get("selected_item", "Не выбрано")
-    price = context.user_data.get("selected_price", "Не выбрано")
+    selected_product = context.user_data.get("selected_product", "Не выбран")
+    selected_category = context.user_data.get("selected_category", "Не выбрана")
 
     caption = f"""
-💸 НОВЫЙ ЧЕК ОБ ОПЛАТЕ
+🧾 НОВАЯ ОПЛАТА
 
-👤 Пользователь: @{user.username if user.username else "без username"}
+👤 Покупатель: @{user.username if user.username else "нет username"}
 🆔 ID: {user.id}
-📛 Имя: {user.first_name}
-
-📦 Категория: {category}
-🎁 Товар: {item_name}
-💰 Цена: {price}
+📦 Категория: {selected_category}
+🛒 Товар: {selected_product}
 """
 
-    photo = update.message.photo[-1]
+    photo = update.message.photo[-1].file_id
 
     await context.bot.send_photo(
         chat_id=ADMIN_ID,
-        photo=photo.file_id,
+        photo=photo,
         caption=caption
     )
 
     await update.message.reply_text(
         "✅ Чек отправлен продавцу!\n\n⏳ Ожидайте подтверждения.",
-        reply_markup=main_keyboard
+        reply_markup=get_main_keyboard()
     )
 
 # =========================
-# ДОКУМЕНТ / ФАЙЛ ЧЕКА
+# ДОКУМЕНТЫ/ФАЙЛЫ ЧЕКОВ
 # =========================
-
 async def handle_document(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
-
-    category = context.user_data.get("selected_category", "Не выбрано")
-    item_name = context.user_data.get("selected_item", "Не выбрано")
-    price = context.user_data.get("selected_price", "Не выбрано")
+    selected_product = context.user_data.get("selected_product", "Не выбран")
+    selected_category = context.user_data.get("selected_category", "Не выбрана")
 
     caption = f"""
-📄 НОВЫЙ ФАЙЛ / ЧЕК
+🧾 НОВАЯ ОПЛАТА (ФАЙЛ)
 
-👤 Пользователь: @{user.username if user.username else "без username"}
+👤 Покупатель: @{user.username if user.username else "нет username"}
 🆔 ID: {user.id}
-📛 Имя: {user.first_name}
-
-📦 Категория: {category}
-🎁 Товар: {item_name}
-💰 Цена: {price}
+📦 Категория: {selected_category}
+🛒 Товар: {selected_product}
 """
 
-    document = update.message.document
+    document = update.message.document.file_id
 
     await context.bot.send_document(
         chat_id=ADMIN_ID,
-        document=document.file_id,
+        document=document,
         caption=caption
     )
 
     await update.message.reply_text(
-        "✅ Файл/чек отправлен продавцу!\n\n⏳ Ожидайте подтверждения.",
-        reply_markup=main_keyboard
+        "✅ Файл с оплатой отправлен продавцу!\n\n⏳ Ожидайте подтверждения.",
+        reply_markup=get_main_keyboard()
     )
 
 # =========================
-# ТЕКСТ ПОСЛЕ ОПЛАТЫ
+# MAIN
 # =========================
-
-async def forward_text_to_admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    text = update.message.text
-
-    # чтобы меню не пересылалось как заказ
-    if text in SHOP_DATA or text in ["📝 Отзывы", "📞 Связаться с продавцом", "💳 Оплата"]:
-        return
-
-    user = update.effective_user
-
-    category = context.user_data.get("selected_category", "Не выбрано")
-    item_name = context.user_data.get("selected_item", "Не выбрано")
-    price = context.user_data.get("selected_price", "Не выбрано")
-
-    admin_text = f"""
-💬 НОВОЕ СООБЩЕНИЕ ОТ КЛИЕНТА
-
-👤 Пользователь: @{user.username if user.username else "без username"}
-🆔 ID: {user.id}
-📛 Имя: {user.first_name}
-
-📦 Категория: {category}
-🎁 Товар: {item_name}
-💰 Цена: {price}
-
-📝 Сообщение:
-{text}
-"""
-
-    await context.bot.send_message(chat_id=ADMIN_ID, text=admin_text)
-
-    await update.message.reply_text(
-        "✅ Сообщение отправлено продавцу.",
-        reply_markup=main_keyboard
-    )
-
-# =========================
-# ЗАПУСК
-# =========================
-
 def main():
+    if not TOKEN:
+        raise ValueError("❌ BOT_TOKEN не найден!")
+
     app = ApplicationBuilder().token(TOKEN).build()
 
     app.add_handler(CommandHandler("start", start))
-    app.add_handler(CallbackQueryHandler(button_handler))
     app.add_handler(MessageHandler(filters.PHOTO, handle_photo))
     app.add_handler(MessageHandler(filters.Document.ALL, handle_document))
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, menu_handler))
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, forward_text_to_admin))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
-    print("✅ Бот запущен!")
+    print("Бот запущен...")
     app.run_polling()
 
 if __name__ == "__main__":

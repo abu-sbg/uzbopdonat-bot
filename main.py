@@ -23,7 +23,7 @@ logging.basicConfig(
 )
 
 # -------------------- ТОКЕН --------------------
-TOKEN = os.getenv("8191264771:AAEpIUrcIi9JmqgDoVMm-HTyw2O4eFk4Fas")
+TOKEN = os.getenv("BOT_TOKEN")
 
 if not TOKEN:
     raise ValueError("❌ BOT_TOKEN не найден!")
